@@ -1,0 +1,92 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--calcite-color-background);
+  color: var(--calcite-color-text-1);
+  font-family: var(--calcite-font-family);
+}
+
+arcgis-map {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--calcite-spacing-md);
+  padding: var(--calcite-spacing-md);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--calcite-font-size--1);
+  line-height: 1.5;
+  color: var(--calcite-color-text-2);
+}
+
+kbd {
+  font-family: inherit;
+  font-size: 0.9em;
+  padding: 0 4px;
+  border: 1px solid var(--calcite-color-border-1);
+  border-radius: var(--calcite-corner-radius-sharp, 2px);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--calcite-spacing-sm);
+  padding: var(--calcite-spacing-lg) 0;
+  color: var(--calcite-color-text-3);
+  text-align: center;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: var(--calcite-font-size--1);
+}
+
+.region-icon {
+  color: var(--calcite-color-brand);
+}
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--calcite-spacing-md);
+}
+
+.dialog-body p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.tight-list {
+  margin: 0;
+  padding-inline-start: 1.1rem;
+}
+
+.tight-list li + li {
+  margin-top: var(--calcite-spacing-xxs);
+}
+
+.map-action {
+  box-shadow: var(--calcite-shadow-sm);
+}
+
+/* Honeypot: off-screen rather than display:none, which some bots skip */
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
