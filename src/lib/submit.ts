@@ -20,6 +20,8 @@ export interface RegionSubmission {
   livesIn: boolean;
   sessionId: string;
   index: number;
+  /** Optional; "" when left blank */
+  comments: string;
 }
 
 export async function submitRegion(s: RegionSubmission): Promise<void> {
@@ -30,16 +32,19 @@ export async function submitRegion(s: RegionSubmission): Promise<void> {
   await fl.load();
 
   const { fields } = config;
-  const feature = new Graphic({
-    geometry: s.polygon,
-    attributes: {
-      [fields.regionName]: s.name,
-      [fields.livesIn]: s.livesIn ? 1 : 0,
-      [fields.sessionId]: s.sessionId,
-      [fields.polyIndex]: s.index,
-      [fields.appVersion]: config.appVersion,
-    },
-  });
+  const attributes: Record<string, string | number> = {
+    [fields.regionName]: s.name,
+    [fields.livesIn]: s.livesIn ? 1 : 0,
+    [fields.sessionId]: s.sessionId,
+    [fields.polyIndex]: s.index,
+    [fields.appVersion]: config.appVersion,
+  };
+  // Comments are optional, and the field may not exist on older layers: only
+  // send them when there's text and somewhere to put it
+  if (s.comments && fl.getField(fields.comments)) {
+    attributes[fields.comments] = s.comments;
+  }
+  const feature = new Graphic({ geometry: s.polygon, attributes });
 
   const result = await fl.applyEdits({ addFeatures: [feature] });
   const added = result.addFeatureResults[0];

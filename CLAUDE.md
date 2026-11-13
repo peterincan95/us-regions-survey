@@ -36,6 +36,11 @@ ArcGIS Online setup, and the security model. This file covers how to work on it.
 ## Conventions
 
 - Use Calcite components wherever possible.
+- All user-facing text lives in the `COPY` object at the top of `src/App.tsx`
+  (plus the `<title>` and description `<meta>` in `index.html`). Components and
+  `lib/` return codes or take `copy` props instead of holding their own strings.
+  Don't write or change the wording; the user writes all copy. New text goes in
+  as a Lorem ipsum placeholder.
 - Never put secrets in `.env` or the source; everything here ships to browsers.
 - Never point `VITE_FEATURE_LAYER_URL` at the private source layer.
 

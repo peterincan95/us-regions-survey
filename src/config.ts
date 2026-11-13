@@ -16,10 +16,14 @@ export const config = {
     sessionId: "session_id",
     polyIndex: "poly_index",
     appVersion: "app_version",
+    /** Optional. Only sent if the layer has this field. */
+    comments: "comments",
   },
 
   limits: {
     nameMaxLength: 80,
+    /** Keep at or below the comments field's length in the layer */
+    commentsMaxLength: 500,
     // Per browser tab. Stops runaway submissions; real people rarely draw more than a handful.
     maxRegionsPerSession: 25,
     // Minimum time between saves, in milliseconds
@@ -27,7 +31,6 @@ export const config = {
     // After generalizing; freehand shapes are simplified down well below this
     maxVertices: 1000,
     minAreaKm2: 10,
-    maxAreaKm2: 20_000_000,
   },
 } as const;
 
@@ -38,15 +41,5 @@ export const LOWER_48_EXTENT = {
   xmax: -66,
   ymax: 50,
 };
-
-/**
- * Rough boxes around the US (WGS84). A region must touch at least one of these.
- * Alaska's box stops at the antimeridian; the far western Aleutians are left out.
- */
-export const US_BOXES = [
-  { name: "Lower 48", xmin: -125.5, ymin: 24, xmax: -66.5, ymax: 49.5 },
-  { name: "Alaska", xmin: -180, ymin: 51, xmax: -129.5, ymax: 71.6 },
-  { name: "Hawaii", xmin: -160.8, ymin: 18.8, xmax: -154.6, ymax: 22.4 },
-];
 
 export const isConfigured = Boolean(config.featureLayerUrl);

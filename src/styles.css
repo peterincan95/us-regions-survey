@@ -31,13 +31,6 @@ arcgis-map {
   color: var(--calcite-color-text-2);
 }
 
-kbd {
-  font-family: inherit;
-  font-size: 0.9em;
-  padding: 0 4px;
-  border: 1px solid var(--calcite-color-border-1);
-  border-radius: var(--calcite-corner-radius-sharp, 2px);
-}
 
 .empty-state {
   display: flex;
@@ -56,6 +49,11 @@ kbd {
 
 .region-icon {
   color: var(--calcite-color-brand);
+}
+
+/* Regions the person lives in: matches the green outline on the map */
+.region-icon--home {
+  color: var(--calcite-color-status-success);
 }
 
 .dialog-body {

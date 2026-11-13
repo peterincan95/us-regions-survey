@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import type { AppCopy } from "../App";
 import { config } from "../config";
-import { cleanName, nameError } from "../lib/validate";
+import { cleanComments, cleanName, nameProblem } from "../lib/validate";
 
 export interface RegionAnswer {
   name: string;
   livesIn: boolean;
+  /** Optional; "" when left blank */
+  comments: string;
   /** Honeypot. Real people never see or fill this. */
   website: string;
 }
@@ -13,14 +16,16 @@ interface Props {
   open: boolean;
   saving: boolean;
   error: string | null;
+  copy: AppCopy["regionDialog"];
   onSave: (answer: RegionAnswer) => void;
   onRedraw: () => void;
   onDiscard: () => void;
 }
 
-export function RegionDialog({ open, saving, error, onSave, onRedraw, onDiscard }: Props) {
+export function RegionDialog({ open, saving, error, copy, onSave, onRedraw, onDiscard }: Props) {
   const [name, setName] = useState("");
   const [livesIn, setLivesIn] = useState(false);
+  const [comments, setComments] = useState("");
   const [touched, setTouched] = useState(false);
   const [website, setWebsite] = useState("");
   const inputRef = useRef<HTMLCalciteInputTextElement>(null);
@@ -30,6 +35,7 @@ export function RegionDialog({ open, saving, error, onSave, onRedraw, onDiscard 
     if (!open) return;
     setName("");
     setLivesIn(false);
+    setComments("");
     setTouched(false);
     setWebsite("");
     // Wait for the dialog to open before focusing
@@ -37,21 +43,21 @@ export function RegionDialog({ open, saving, error, onSave, onRedraw, onDiscard 
     return () => window.clearTimeout(t);
   }, [open]);
 
-  const invalid = nameError(name);
-  const showError = touched && invalid;
+  const problem = nameProblem(name);
+  const errorText = touched && problem ? copy.nameErrors[problem] : null;
 
   function submit() {
     setTouched(true);
-    if (invalid || saving) return;
-    onSave({ name: cleanName(name), livesIn, website });
+    if (problem || saving) return;
+    onSave({ name: cleanName(name), livesIn, comments: cleanComments(comments), website });
   }
 
   return (
     <calcite-dialog
       open={open}
       modal
-      heading="Name this region"
-      description="What do you call the area you outlined?"
+      heading={copy.heading}
+      description={copy.description}
       width="s"
       escapeDisabled={saving}
       outsideCloseDisabled
@@ -69,18 +75,18 @@ export function RegionDialog({ open, saving, error, onSave, onRedraw, onDiscard 
         }}
       >
         <calcite-label>
-          Region name
+          {copy.nameLabel}
           <calcite-input-text
             ref={inputRef}
             value={name}
             maxLength={config.limits.nameMaxLength}
-            placeholder="e.g. The Pacific Northwest"
+            placeholder={copy.namePlaceholder}
             autocomplete="off"
             required
             disabled={saving}
-            status={showError ? "invalid" : "idle"}
-            validationMessage={showError ? invalid : undefined}
-            validationIcon={showError ? true : undefined}
+            status={errorText ? "invalid" : "idle"}
+            validationMessage={errorText ?? undefined}
+            validationIcon={errorText ? true : undefined}
             oncalciteInputTextInput={(e) => setName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -97,10 +103,25 @@ export function RegionDialog({ open, saving, error, onSave, onRedraw, onDiscard 
             disabled={saving}
             oncalciteCheckboxChange={(e) => setLivesIn(e.target.checked)}
           />
-          I live in this region
+          {copy.livesInLabel}
         </calcite-label>
 
-        {/* Honeypot: hidden from people and screen readers, tempting to bots */}
+        <calcite-label>
+          {copy.commentsLabel}
+          <calcite-text-area
+            value={comments}
+            maxLength={config.limits.commentsMaxLength}
+            limitText
+            rows={3}
+            resize="vertical"
+            placeholder={copy.commentsPlaceholder}
+            disabled={saving}
+            oncalciteTextAreaInput={(e) => setComments(e.target.value)}
+          />
+        </calcite-label>
+
+        {/* Honeypot: hidden from people and screen readers, tempting to bots.
+            Its label is bait for bots, not copy people see. */}
         <div className="hp" aria-hidden="true">
           <label>
             Website
@@ -115,12 +136,12 @@ export function RegionDialog({ open, saving, error, onSave, onRedraw, onDiscard 
         </div>
 
         <calcite-notice open kind="warning" icon="exclamation-mark-triangle" scale="s" width="full">
-          <div slot="message">Once saved, a region can’t be changed or removed.</div>
+          <div slot="message">{copy.lockedWarning}</div>
         </calcite-notice>
 
         {error && (
           <calcite-notice open kind="danger" icon="x-octagon" scale="s" width="full">
-            <div slot="title">Couldn’t save</div>
+            <div slot="title">{copy.saveErrorTitle}</div>
             <div slot="message">{error}</div>
           </calcite-notice>
         )}
@@ -134,7 +155,7 @@ export function RegionDialog({ open, saving, error, onSave, onRedraw, onDiscard 
         disabled={saving}
         onClick={onDiscard}
       >
-        Discard
+        {copy.discardButton}
       </calcite-button>
       <calcite-button
         slot="footer-end"
@@ -143,10 +164,10 @@ export function RegionDialog({ open, saving, error, onSave, onRedraw, onDiscard 
         disabled={saving}
         onClick={onRedraw}
       >
-        Redraw
+        {copy.redrawButton}
       </calcite-button>
       <calcite-button slot="footer-end" loading={saving} disabled={saving} onClick={submit}>
-        {error ? "Try again" : "Save region"}
+        {error ? copy.retryButton : copy.saveButton}
       </calcite-button>
     </calcite-dialog>
   );

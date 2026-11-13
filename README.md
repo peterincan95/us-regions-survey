@@ -28,6 +28,7 @@ Built with React, the ArcGIS Maps SDK for JavaScript (map components) and Calcit
    | `session_id` | String, length 36 | Random per browser tab; groups one visit's polygons |
    | `poly_index` | Small integer | 1, 2, 3… within the session |
    | `app_version` | String, length 20 | |
+| `comments` | String, length 500 | Optional. The app only sends it if the field exists |
 
    In the layer's settings, turn on **editor tracking** to record creation dates.
    **Don't share this layer.** It stays private and holds the real data.
@@ -40,7 +41,7 @@ Built with React, the ArcGIS Maps SDK for JavaScript (map components) and Calcit
      those they add**.
    - Turn off **Enable Sync** and **Allow others to export**.
    - Optional: in *Visualization*, or by setting a view definition, hide every field
-     except the five above.
+     except the six above.
 
 3. **Web map:** a public web map from your org with only a basemap (dark gray
    canvas suits the app's dark theme). The app hides popups and adds its own layers.
@@ -65,9 +66,9 @@ in the tab and nothing is sent. A banner says so.
 - Region names are cleaned (control characters removed, whitespace collapsed,
   length capped at 80) and only ever shown as text, never as HTML.
 - Before saving, each polygon is simplified and generalized. It must not cross over
-  itself and must touch a rough box around the lower 48, Alaska or Hawaii. It must
-  be larger than 10 km² and smaller than 20 million km², with at most 1,000
-  vertices after generalizing.
+  itself, must be larger than 10 km², and can have at most 1,000 vertices after
+  generalizing. There's no limit on location or maximum size, so check for shapes
+  outside the US or covering huge areas during analysis.
 - Limits per tab: 25 regions, and at least 3 seconds between saves. Bots that fill
   the hidden honeypot field get a fake success, and nothing is sent.
 - A Content-Security-Policy is added to the production build (see

@@ -20,6 +20,7 @@ import "@esri/calcite-components/components/calcite-action";
 import "@esri/calcite-components/components/calcite-button";
 import "@esri/calcite-components/components/calcite-dialog";
 import "@esri/calcite-components/components/calcite-input-text";
+import "@esri/calcite-components/components/calcite-text-area";
 import "@esri/calcite-components/components/calcite-label";
 import "@esri/calcite-components/components/calcite-checkbox";
 import "@esri/calcite-components/components/calcite-notice";

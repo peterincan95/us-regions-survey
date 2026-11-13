@@ -1,31 +1,39 @@
+import type { AppCopy } from "../App";
 import type { SavedRegion } from "../lib/session";
 
 interface Props {
   regions: SavedRegion[];
+  copy: AppCopy["list"];
   onZoom: (region: SavedRegion) => void;
 }
 
-export function RegionList({ regions, onZoom }: Props) {
+export function RegionList({ regions, copy, onZoom }: Props) {
   if (regions.length === 0) {
     return (
       <div className="empty-state">
         <calcite-icon icon="polygon" scale="l" />
-        <p>Regions you save will appear here.</p>
+        <p>{copy.empty}</p>
       </div>
     );
   }
 
   return (
-    <calcite-list label="Your saved regions" selectionMode="none">
+    <calcite-list label={copy.label} selectionMode="none">
       {regions.map((r) => (
         <calcite-list-item
           key={r.localId}
           label={r.name}
-          description={r.livesIn ? "You live here" : undefined}
           oncalciteListItemSelect={() => onZoom(r)}
         >
-          <calcite-icon slot="content-start" icon="polygon" scale="s" className="region-icon" />
-          {r.livesIn && <calcite-icon slot="content-end" icon="home" scale="s" />}
+          <calcite-icon
+            slot="content-start"
+            icon="polygon"
+            scale="s"
+            className={r.livesIn ? "region-icon region-icon--home" : "region-icon"}
+          />
+          {r.livesIn && (
+            <calcite-icon slot="content-end" icon="home" scale="s" className="region-icon--home" />
+          )}
         </calcite-list-item>
       ))}
     </calcite-list>
