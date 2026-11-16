@@ -7,6 +7,8 @@ export interface SavedRegion {
   index: number;
   name: string;
   livesIn: boolean;
+  /** Missing on regions saved before this question was added */
+  fromUS?: boolean;
   /** Polygon as JSON in the view's spatial reference */
   geometry: object;
   savedAt: number;

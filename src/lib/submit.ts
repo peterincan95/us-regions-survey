@@ -18,6 +18,7 @@ export interface RegionSubmission {
   polygon: Polygon;
   name: string;
   livesIn: boolean;
+  fromUS: boolean;
   sessionId: string;
   index: number;
   /** Optional; "" when left blank */
@@ -43,6 +44,9 @@ export async function submitRegion(s: RegionSubmission): Promise<void> {
   // send them when there's text and somewhere to put it
   if (s.comments && fl.getField(fields.comments)) {
     attributes[fields.comments] = s.comments;
+  }
+  if (fl.getField(fields.fromUS)) {
+    attributes[fields.fromUS] = s.fromUS ? 1 : 0;
   }
   const feature = new Graphic({ geometry: s.polygon, attributes });
 

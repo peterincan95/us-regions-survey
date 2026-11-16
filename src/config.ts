@@ -13,6 +13,8 @@ export const config = {
   fields: {
     regionName: "region_name",
     livesIn: "lives_in",
+    /** 1 if the person lives or has lived in the US, else 0 */
+    fromUS: "from_us",
     sessionId: "session_id",
     polyIndex: "poly_index",
     appVersion: "app_version",

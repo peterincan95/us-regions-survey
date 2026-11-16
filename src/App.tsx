@@ -84,6 +84,8 @@ export const COPY = {
     nameLabel: "Region name",
     namePlaceholder: "Region name",
     livesInLabel: "I live (or have lived) in this region",
+    /** Second checkbox. Starts ticked once it has been ticked on any saved region this visit */
+    fromUSLabel: "I live in (or have lived in) the United States",
     /** Label above the optional comments box */
     commentsLabel: "Comments (optional)",
     /** Grey hint text inside the empty comments box */
@@ -192,6 +194,8 @@ export default function App() {
   const isMobile = useMediaQuery("(max-width: 720px)");
 
   const atLimit = regions.length >= config.limits.maxRegionsPerSession;
+  // Once someone says they live in the US, assume so for their later regions
+  const defaultFromUS = regions.some((r) => r.fromUS);
 
   // Draw saved regions from this tab's session (e.g. after a refresh)
   useEffect(() => {
@@ -291,6 +295,7 @@ export default function App() {
           polygon: pending.polygon,
           name: answer.name,
           livesIn: answer.livesIn,
+          fromUS: answer.fromUS,
           sessionId: getSessionId(),
           index,
           comments: answer.comments,
@@ -303,6 +308,7 @@ export default function App() {
         index,
         name: answer.name,
         livesIn: answer.livesIn,
+        fromUS: answer.fromUS,
         geometry: pending.polygon.toJSON(),
         savedAt: Date.now(),
       };
@@ -439,6 +445,7 @@ export default function App() {
         open={pending !== null}
         saving={saving}
         error={saveError}
+        defaultFromUS={defaultFromUS}
         copy={COPY.regionDialog}
         onSave={(a) => void onSave(a)}
         onRedraw={onRedraw}
