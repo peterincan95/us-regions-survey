@@ -25,10 +25,11 @@ Built with React, the ArcGIS Maps SDK for JavaScript (map components) and Calcit
    |---|---|---|
    | `region_name` | String, length 80 | |
    | `lives_in` | Small integer | Add a coded-value domain: 0 = No, 1 = Yes |
+   | `from_us` | Small integer | 1 if they live or have lived in the US; same 0/1 domain |
    | `session_id` | String, length 36 | Random per browser tab; groups one visit's polygons |
    | `poly_index` | Small integer | 1, 2, 3… within the session |
    | `app_version` | String, length 20 | |
-| `comments` | String, length 500 | Optional. The app only sends it if the field exists |
+   | `comments` | String, length 500 | Optional. The app only sends it if the field exists |
 
    In the layer's settings, turn on **editor tracking** to record creation dates.
    **Don't share this layer.** It stays private and holds the real data.
@@ -41,7 +42,7 @@ Built with React, the ArcGIS Maps SDK for JavaScript (map components) and Calcit
      those they add**.
    - Turn off **Enable Sync** and **Allow others to export**.
    - Optional: in *Visualization*, or by setting a view definition, hide every field
-     except the six above.
+     except the seven above.
 
 3. **Web map:** a public web map from your org with only a basemap (dark gray
    canvas suits the app's dark theme). The app hides popups and adds its own layers.

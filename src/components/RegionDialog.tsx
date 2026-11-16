@@ -6,6 +6,7 @@ import { cleanComments, cleanName, nameProblem } from "../lib/validate";
 export interface RegionAnswer {
   name: string;
   livesIn: boolean;
+  fromUS: boolean;
   /** Optional; "" when left blank */
   comments: string;
   /** Honeypot. Real people never see or fill this. */
@@ -16,15 +17,27 @@ interface Props {
   open: boolean;
   saving: boolean;
   error: string | null;
+  /** Starting value for the US checkbox each time the dialog opens */
+  defaultFromUS: boolean;
   copy: AppCopy["regionDialog"];
   onSave: (answer: RegionAnswer) => void;
   onRedraw: () => void;
   onDiscard: () => void;
 }
 
-export function RegionDialog({ open, saving, error, copy, onSave, onRedraw, onDiscard }: Props) {
+export function RegionDialog({
+  open,
+  saving,
+  error,
+  defaultFromUS,
+  copy,
+  onSave,
+  onRedraw,
+  onDiscard,
+}: Props) {
   const [name, setName] = useState("");
   const [livesIn, setLivesIn] = useState(false);
+  const [fromUS, setFromUS] = useState(defaultFromUS);
   const [comments, setComments] = useState("");
   const [touched, setTouched] = useState(false);
   const [website, setWebsite] = useState("");
@@ -35,12 +48,14 @@ export function RegionDialog({ open, saving, error, copy, onSave, onRedraw, onDi
     if (!open) return;
     setName("");
     setLivesIn(false);
+    setFromUS(defaultFromUS);
     setComments("");
     setTouched(false);
     setWebsite("");
     // Wait for the dialog to open before focusing
     const t = window.setTimeout(() => void inputRef.current?.setFocus(), 150);
     return () => window.clearTimeout(t);
+    // defaultFromUS only matters at the moment the dialog opens
   }, [open]);
 
   const problem = nameProblem(name);
@@ -49,7 +64,7 @@ export function RegionDialog({ open, saving, error, copy, onSave, onRedraw, onDi
   function submit() {
     setTouched(true);
     if (problem || saving) return;
-    onSave({ name: cleanName(name), livesIn, comments: cleanComments(comments), website });
+    onSave({ name: cleanName(name), livesIn, fromUS, comments: cleanComments(comments), website });
   }
 
   return (
@@ -104,6 +119,15 @@ export function RegionDialog({ open, saving, error, copy, onSave, onRedraw, onDi
             oncalciteCheckboxChange={(e) => setLivesIn(e.target.checked)}
           />
           {copy.livesInLabel}
+        </calcite-label>
+
+        <calcite-label layout="inline">
+          <calcite-checkbox
+            checked={fromUS}
+            disabled={saving}
+            oncalciteCheckboxChange={(e) => setFromUS(e.target.checked)}
+          />
+          {copy.fromUSLabel}
         </calcite-label>
 
         <calcite-label>
